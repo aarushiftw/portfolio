@@ -1357,11 +1357,11 @@
                     });
                     const birdRow = Math.min(Math.max(Math.round(birdY), 0), height - 1);
                     grid[birdRow][5] = BIRD_CHAR;
-                    if (!gameStarted && !gameOver) writeCenter(grid, "[ SPACE TO MINT ]", Math.floor(height/2));
+                    if (!gameStarted && !gameOver) writeCenter(grid, "[ HIT SPACE BAR TO FLAP UP/DOWN ACROSS MARKETS ]", Math.floor(height/2));
                     else if (gameOver) {
                       writeCenter(grid, "TX FAILED", Math.floor(height/2) - 1);
                       writeCenter(grid, `GAS: ${score}`, Math.floor(height/2) + 1);
-                      writeCenter(grid, "[ SPACE TO RETRY ]", Math.floor(height/2) + 3);
+                      writeCenter(grid, "[ SPACE BAR TO RETRY ]", Math.floor(height/2) + 3);
                     }
                     else {
                        const scoreStr = `${score}`;
