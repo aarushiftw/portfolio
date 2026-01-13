@@ -1,0 +1,1480 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aarushi arun // terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+    <style>
+      :root {
+          --electric-blue: #2027ed;
+      }
+      body {
+          font-family: 'JetBrains Mono', monospace;
+          background-color: #050505;
+          color: #d4d4d4;
+          text-transform: lowercase;
+      }
+      .ascii-box {
+          border: 1px solid #333;
+          transition: all 0.2s ease;
+      }
+      .ascii-box:hover {
+          border-color: var(--electric-blue);
+          box-shadow: 4px 4px 0px var(--electric-blue);
+          transform: translate(-2px, -2px);
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+          background: #050505;
+      }
+      ::-webkit-scrollbar-thumb {
+          background: #333;
+          border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+          background: var(--electric-blue);
+      }
+      .blink-cursor::after {
+          content: '█';
+          animation: blink 1s step-end infinite;
+          color: var(--electric-blue);
+          margin-left: 4px;
+      }
+      @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+      }
+      .pattern-grid {
+          background-image: radial-gradient(#2027ed 1px, transparent 1px);
+          background-size: 20px 20px;
+          opacity: 0.05;
+      }
+      @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+      }
+      .animate-marquee {
+          display: flex;
+          width: max-content;
+          animation: marquee 40s linear infinite;
+      }
+      .pause-hover:hover .animate-marquee {
+          animation-play-state: paused;
+      }
+
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      .tooltip-copy {
+        position: relative;
+      }
+      .tooltip-copy::after {
+        content: "copied!";
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--electric-blue);
+        color: white;
+        padding: 4px 8px;
+        font-size: 12px;
+        border-radius: 2px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .tooltip-copy.copied::after {
+        opacity: 1;
+      }
+
+      /* Game Styles */
+      #game-wrapper {
+        transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      }
+      #game-canvas {
+        font-family: 'JetBrains Mono', monospace;
+        line-height: 1.1;
+      }
+
+      /* Fluid Header Canvas */
+      #fluid-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        opacity: 0.4;
+        mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+        pointer-events: none;
+      }
+
+      /* Twitter Embed Overrides */
+      .twitter-tweet {
+        margin: 0 !important;
+        width: 100% !important;
+      }
+      /* Ensure tweets don't cause massive shifts */
+      .tweet-container {
+          min-height: 200px;
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+      }
+    </style>
+    <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+    <style>
+      .tweet-container { max-height: 380px !important; overflow-y: auto !important; scrollbar-width: none; } .tweet-container::-webkit-scrollbar { display: none; }
+    </style>
+    <link id="all-fonts-link-font-geist" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-geist">
+      .font-geist { font-family: 'Geist', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-roboto" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-roboto">
+      .font-roboto { font-family: 'Roboto', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-montserrat" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-montserrat">
+      .font-montserrat { font-family: 'Montserrat', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-poppins" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-poppins">
+      .font-poppins { font-family: 'Poppins', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-playfair" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&amp;display=swap">
+    <style id="all-fonts-style-font-playfair">
+      .font-playfair { font-family: 'Playfair Display', serif !important; }
+    </style>
+    <link id="all-fonts-link-font-instrument-serif" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-instrument-serif">
+      .font-instrument-serif { font-family: 'Instrument Serif', serif !important; }
+    </style>
+    <link id="all-fonts-link-font-merriweather" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&amp;display=swap">
+    <style id="all-fonts-style-font-merriweather">
+      .font-merriweather { font-family: 'Merriweather', serif !important; }
+    </style>
+    <link id="all-fonts-link-font-bricolage" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-bricolage">
+      .font-bricolage { font-family: 'Bricolage Grotesque', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-jakarta" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-jakarta">
+      .font-jakarta { font-family: 'Plus Jakarta Sans', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-manrope" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-manrope">
+      .font-manrope { font-family: 'Manrope', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-space-grotesk" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-space-grotesk">
+      .font-space-grotesk { font-family: 'Space Grotesk', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-work-sans" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-work-sans">
+      .font-work-sans { font-family: 'Work Sans', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-pt-serif" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&amp;display=swap">
+    <style id="all-fonts-style-font-pt-serif">
+      .font-pt-serif { font-family: 'PT Serif', serif !important; }
+    </style>
+    <link id="all-fonts-link-font-geist-mono" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-geist-mono">
+      .font-geist-mono { font-family: 'Geist Mono', monospace !important; }
+    </style>
+    <link id="all-fonts-link-font-space-mono" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap">
+    <style id="all-fonts-style-font-space-mono">
+      .font-space-mono { font-family: 'Space Mono', monospace !important; }
+    </style>
+    <link id="all-fonts-link-font-quicksand" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-quicksand">
+      .font-quicksand { font-family: 'Quicksand', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-nunito" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-nunito">
+      .font-nunito { font-family: 'Nunito', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-newsreader" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..800&amp;display=swap">
+    <style id="all-fonts-style-font-newsreader">
+      .font-newsreader { font-family: 'Newsreader', serif !important; }
+    </style>
+    <link id="all-fonts-link-font-google-sans-flex" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-google-sans-flex">
+      .font-google-sans-flex { font-family: 'Google Sans Flex', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-oswald" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-oswald">
+      .font-oswald { font-family: 'Oswald', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-dm-sans" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-dm-sans">
+      .font-dm-sans { font-family: 'DM Sans', sans-serif !important; }
+    </style>
+    <link id="all-fonts-link-font-cormorant" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-cormorant">
+      .font-cormorant { font-family: 'Cormorant Garamond', serif !important; }
+    </style>
+  </head>
+  <body class="min-h-screen overflow-x-hidden selection:bg-[#2027ed] selection:text-white text-sm text-slate-50 pb-12 relative">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 pattern-grid pointer-events-none z-0"></div>
+
+    <main class="sm:px-8 lg:px-10 z-10 max-w-6xl mr-auto ml-auto pt-0 pr-6 pl-6 relative">
+      <!-- Fluid Header Section -->
+      <header class="mb-16 relative pt-14 w-screen left-1/2 -ml-[50vw]">
+        <!-- Canvas for Fluid ASCII Effect -->
+        <canvas id="ascii-canvas" width="1440" height="419" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.5; mask-image: linear-gradient(to bottom, black 20%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 20%, transparent 100%); pointer-events: none;"></canvas>
+
+        <!-- Content Overlay -->
+        <div class="z-10 relative max-w-6xl mx-auto px-6 sm:px-8 lg:px-10">
+          <div class="mb-8 opacity-60 select-none pointer-events-none overflow-hidden mix-blend-hard-light" aria-hidden="true">
+            <pre id="header-visualizer" class="text-[6px] leading-[5px] text-[#2027ed] font-semibold font-mono whitespace-pre">▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂                          ▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▄▄▄▄▄▄▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂                           ▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▇▇▇
+▆▆▆▆▆▆▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▄▄▄▄▄▄▃▃▃▃▃▃▃▂▂▂▂▂▂▂                                 ▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▄▄▄▄▄▄▄▃▃▃▃▃▃▂▂▂▂▂▂▂▂                                 ▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▆▆
+▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂                                  ▂▂▂▂▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▂▂▂▂▂▂▂                                  ▂▂▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▆
+▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂                             ▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂                              ▂▂▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▅▅▅▅
+▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂              ▂▂▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂               ▂▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▄▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▆▅▅▅▅▅▅▅▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄
+▃▃▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇██████████▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▅▅▅▅▅▅▅▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▄▄▅▅▅▅▅▅▅▆▆▆▆▆▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇█████████▇▇▇▇▇▇▇▇▇▇▇▇▆▆▆▆▆▆▆▆▅▅▅▅▅▅▄▄▄▄▄▄▄▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▃▃
+</pre>
+          </div>
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-[#333] pb-8 bg-gradient-to-b from-transparent to-[#050505]">
+            <div class="">
+              <h1 class="text-3xl sm:text-4xl blink-cursor text-white mb-2 tracking-tight font-semibold">
+                aarushi a
+              </h1>
+              <p class="text-base text-gray-500 font-medium">
+                creative. marketing. strategy.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-5 text-sm font-medium">
+              <button onclick="copyEmail(this)" class="hover:text-[#2027ed] flex items-center gap-2 tooltip-copy group transition-colors">
+                <span class="group-hover:hidden text-gray-400">[ email ]</span>
+                <span class="hidden group-hover:inline text-gray-400 group-hover:text-[#2027ed]">
+                  [ attachment.aaruushi@gmail.com ]
+                </span>
+                <iconify-icon icon="lucide:copy" width="14" stroke-width="1.5"></iconify-icon>
+              </button>
+              <script>
+                function copyEmail(btn) {
+                    navigator.clipboard.writeText('attachment.aaruushi@gmail.com');
+                    btn.classList.add('copied');
+                    setTimeout(() => btn.classList.remove('copied'), 2000);
+                }
+              </script>
+
+              <a href="https://x.com/aarushiftw" target="_blank" class="hover:text-[#2027ed] flex items-center gap-1">
+                [ say gm ]
+              </a>
+              <a href="https://www.linkedin.com/in/aarushi-arun-788808180/" target="_blank" class="hover:text-[#2027ed] flex items-center gap-1">
+                [ linkedin ]
+              </a>
+              <a href="https://t.me/aarushiftw" target="_blank" class="hover:text-[#2027ed] flex items-center gap-1 transition-colors text-white">
+                [ telegram ]
+              </a>
+            </div>
+          </div>
+
+          <div class="leading-relaxed text-base text-gray-400 max-w-3xl mt-8">
+            <p class="mb-5">
+              <span class="text-[#2027ed]">&gt;</span>
+              attention economist. growth-first.
+              <span class="font-semibold text-white">
+                $1b+ in transaction volume driven.
+              </span>
+            </p>
+            <p class="mb-5">
+              active since defi summer. ex-okx social strategy.
+            </p>
+            <p class="mb-5" style="">
+              i operate best with
+              <span class="text-white font-semibold">high-agency teams</span>
+              and
+              <span class="font-semibold text-white">
+                conviction-first products.
+              </span>
+            </p>
+            <p class="" style="">
+              ai, research and utility driven crypto products peak my interest.
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Grid Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-12">
+        <!-- LEFT COLUMN -->
+        <div class="lg:col-span-8 flex flex-col gap-16">
+          <!-- Featured Work / Metrics -->
+          <section class="">
+            <div class="flex mb-6 gap-3 items-center">
+              <iconify-icon icon="lucide:terminal" class="text-[#2027ed]" width="20" stroke-width="1.5"></iconify-icon>
+              <h2 class="text-base text-white tracking-tight font-semibold">
+                logs
+              </h2>
+            </div>
+
+            <div class="space-y-10">
+              <!-- Role 1: Brahma -->
+              <div class="ascii-box bg-[#0a0a0a] p-6">
+                <div class="flex border-dashed border-[#333] border-b mb-6 pb-4 items-start justify-between">
+                  <div class="">
+                    <div class="flex items-center gap-3">
+                      <h3 class="text-2xl text-white font-semibold tracking-tight">
+                        <a href="https://brahma.fi" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          brahma.fi
+                        </a>
+                      </h3>
+                    </div>
+                    <p class="text-sm text-[#2027ed] mt-1">marketing lead</p>
+                  </div>
+                  <span class="text-sm text-gray-600 font-medium">
+                    jan 22 - oct 25
+                  </span>
+                </div>
+
+                <!-- Metrics -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+                  <div class="bg-[#111] p-4 border border-[#222]">
+                    <p class="text-xs text-gray-500 mb-1.5 uppercase tracking-wide">
+                      social impressions
+                    </p>
+                    <p class="text-xl text-white font-semibold">2.1m+</p>
+                  </div>
+                  <div class="bg-[#111] p-4 border border-[#222]">
+                    <p class="text-xs text-gray-500 mb-1.5 uppercase tracking-wide">
+                      <a href="https://x.com/BrahmaFi/status/1925552926183051392/video/1" target="_blank" class="hover:text-white underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                        nft mints (imprint)
+                      </a>
+                    </p>
+                    <p class="text-xl text-white font-bold">150k+</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  <a href="https://dune.com/brahma_wizards/brahma-visualised" target="_blank" class="flex items-center justify-between border-[#222] hover:border-[#2027ed] transition-colors group z-20 border pt-3 pr-3 pb-3 pl-3 relative">
+                    <div class="flex items-center gap-2.5">
+                      <iconify-icon icon="simple-icons:dune" class="text-gray-500 group-hover:text-[#f15a24] transition-colors" width="14"></iconify-icon>
+                      <span class="text-xs text-gray-400 group-hover:text-white uppercase tracking-wide font-semibold">
+                        proof of stats
+                      </span>
+                    </div>
+                    <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 group-hover:text-[#2027ed] stroke-width-1.5" width="14"></iconify-icon>
+                  </a>
+                  <a href="https://www.figma.com/slides/3tlaVzjAZXKys4gUfLwQhy/Brahma-Deck--Copy-?node-id=0-1&amp;t=wDCIyhcVLz0AZHer-1" target="_blank" class="flex items-center justify-between p-3 border border-[#222] bg-[#111] hover:border-[#2027ed] transition-colors group relative z-20">
+                    <div class="flex items-center gap-2.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" class="text-gray-500 group-hover:text-white transition-colors" style="" data-icon-set="simple-icons" data-simple-icons="figma">
+                        <path fill="currentColor" d="M15.852 8.981h-4.588V0h4.588c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.491-4.49 4.491M12.735 7.51h3.117c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-3.117zm0 1.471H8.148c-2.476 0-4.49-2.014-4.49-4.49S5.672 0 8.148 0h4.588v8.981zm-4.587-7.51c-1.665 0-3.019 1.355-3.019 3.019s1.354 3.02 3.019 3.02h3.117V1.471zm4.587 15.019H8.148c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h4.588v8.98zM8.148 8.981c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h3.117V8.981zM8.172 24c-2.489 0-4.515-2.014-4.515-4.49s2.014-4.49 4.49-4.49h4.588v4.441c0 2.503-2.047 4.539-4.563 4.539m-.024-7.51a3.023 3.023 0 0 0-3.019 3.019c0 1.665 1.365 3.019 3.044 3.019c1.705 0 3.093-1.376 3.093-3.068v-2.97zm7.704 0h-.098c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h.098c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.49-4.49 4.49m-.097-7.509c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h.098c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019z"></path>
+                      </svg>
+                      <span class="text-xs text-gray-400 group-hover:text-white uppercase tracking-wide font-semibold">
+                        dive deeper
+                      </span>
+                    </div>
+                    <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 group-hover:text-[#2027ed] stroke-width-1.5" width="14"></iconify-icon>
+                  </a>
+                </div>
+
+                <!-- Teams Slider -->
+                <div class="mb-6 overflow-hidden border-t border-b border-[#222] py-3 bg-[#050505]">
+                  <p class="text-xs text-gray-500 mb-3 uppercase tracking-widest font-semibold">
+                    collaborated with:
+                  </p>
+                  <div class="marquee-container w-full overflow-hidden pause-hover">
+                    <div class="animate-marquee whitespace-nowrap flex gap-10 text-sm font-medium text-gray-400 items-center">
+                      <span class="flex items-center gap-2">
+                        <iconify-icon icon="simple-icons:aave" width="16"></iconify-icon>
+                        <a href="https://x.com/AaveGrants/status/1750566735386722623" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          AAVE
+                        </a>
+                      </span>
+                      <span class="flex items-center gap-2">
+                        <iconify-icon icon="simple-icons:arbitrum" width="16"></iconify-icon>
+                        <a href="https://x.com/arbitrum/status/1745957131721863583?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          ARBITRUM
+                        </a>
+                      </span>
+                      <span class="flex items-center gap-2" style="">
+                        <a href="https://x.com/GearboxProtocol/status/1620810966614278145?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          GEARBOX
+                        </a>
+                      </span>
+
+                      <span class="">
+                        <a href="https://x.com/Morpho/status/1846230521703289061?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          MORPHO
+                        </a>
+                      </span>
+                      <span class="">
+                        <a href="https://x.com/BrahmaFi/status/1872613595768619082?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          PENDLE
+                        </a>
+                      </span>
+                      <span class="">
+                        <a href="https://x.com/jessepollak/status/1852338704871752068?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          BASE
+                        </a>
+                      </span>
+                      <span class="">
+                        <a href="https://x.com/eulerfinance/status/1955984823744356721" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          EULER
+                        </a>
+                      </span>
+                      <span class="">
+                        <a href="https://x.com/HypurrFi/status/1952774057776087229" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          HYPURRFI
+                        </a>
+                      </span>
+                      <span class="">
+                        <a href="https://x.com/AlloraNetwork/status/1910694380312142155?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          ALLORA
+                        </a>
+                      </span>
+                      <span class="">
+                        <a href="https://x.com/safe/status/1797559834273022404?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          SAFE
+                        </a>
+                      </span>
+                      <span class="text-[#2027ed]">+ many more!</span>
+                      <span class="flex items-center gap-2">
+                        <iconify-icon icon="simple-icons:aave" width="16"></iconify-icon>
+                        <a href="https://x.com/AaveGrants/status/1750566735386722623" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          AAVE
+                        </a>
+                      </span>
+                      <span class="flex items-center gap-2">
+                        <iconify-icon icon="simple-icons:arbitrum" width="16"></iconify-icon>
+                        <a href="https://x.com/arbitrum/status/1745957131721863583?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          ARBITRUM
+                        </a>
+                      </span>
+                      <span>
+                        <a href="https://x.com/Morpho/status/1846230521703289061?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          MORPHO
+                        </a>
+                      </span>
+                      <span>
+                        <a href="https://x.com/BrahmaFi/status/1872613595768619082?s=20" target="_blank" class="hover:text-[#2027ed] underline decoration-dotted decoration-[#2027ed] underline-offset-4">
+                          PENDLE
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <ul class="text-sm text-gray-400 space-y-3 list-none mb-6 leading-relaxed">
+                  <li class="flex gap-3">
+                    <span class="text-[#2027ed]">-</span>
+                    <span class="">
+                      <a href="https://t.co/v5xhLHBt0C" target="_blank" class="hover:text-white underline decoration-dotted decoration-[#2027ed] underline-offset-4 transition-colors">
+                        karma
+                      </a>
+                      : 20k users onboarded in &lt;7 days (organic)
+                    </span>
+                  </li>
+                  <li class="flex gap-x-3 gap-y-3">
+                    <span class="text-[#2027ed] font-bold">-</span>
+                    owned branding, distribution &amp; cross-team comms
+                  </li>
+                  <li class="flex gap-3 gap-x-3 gap-y-3" style="">
+                    <span class="text-[#2027ed] font-bold">-</span>
+                    spearheaded gtm plan for brahma vaults, console and crypto
+                    cards
+                  </li>
+                  <li class="flex gap-3 gap-x-3 gap-y-3">
+                    <span class="text-[#2027ed] font-bold">-</span>
+                    scaled end-to-end socials, community, on-ground events &amp;
+                    PR strategy
+                  </li>
+                </ul>
+
+                <!-- PR Slider -->
+                <div class="border-t border-[#333] pt-4">
+                  <p class="text-xs text-gray-500 mb-3 font-semibold">
+                    featured in:
+                  </p>
+                  <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+                    <a href="https://www.theblock.co/post/363412/crypto-credit-card-startup-brahma-taps-euler-finance-for-decentralized-lending-option" target="_blank" class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 hover:border-[#2027ed] transition-colors flex items-center gap-2.5">
+                      <iconify-icon icon="lucide:box" class="text-[#2027ed]" width="14" stroke-width="1.5"></iconify-icon>
+                      <span class="text-xs text-white font-medium">
+                        The Block
+                      </span>
+                    </a>
+                    <a href="https://decrypt.co/220088/scaling-defi-efficiency-brahma-console-leads-safe-deployment-on-blast-l2" target="_blank" class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 hover:border-[#2027ed] transition-colors flex items-center gap-2.5">
+                      <iconify-icon icon="lucide:file-text" class="text-[#2027ed]" width="14" stroke-width="1.5"></iconify-icon>
+                      <span class="text-xs text-white font-medium">
+                        Decrypt
+                      </span>
+                    </a>
+                    <a href="https://markets.businessinsider.com/news/stocks/brahma-console-launches-lrst-automation-feature-for-ezeth-and-eeth-tokens-1033217546" target="_blank" class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 hover:border-[#2027ed] transition-colors flex items-center gap-2.5">
+                      <iconify-icon icon="lucide:trending-up" class="text-[#2027ed]" width="14" stroke-width="1.5"></iconify-icon>
+                      <span class="text-xs text-white font-medium">
+                        Business Insider
+                      </span>
+                    </a>
+                    <span class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 text-xs text-gray-500 flex items-center font-medium">
+                      + more
+                    </span>
+                  </div>
+                </div>
+                <div class="border-t border-[#333] pt-4 mt-6">
+                  <p class="text-xs text-gray-500 mb-3 font-semibold">
+                    technical / content:
+                  </p>
+                  <div class="flex flex-col gap-2">
+                    <a href="https://docs.brahma.fi/" target="_blank" class="flex items-center justify-between group p-2 border border-transparent hover:border-[#333] hover:bg-[#111] transition-all relative z-50 cursor-pointer pointer-events-auto">
+                      <div class="flex items-center gap-3">
+                        <iconify-icon icon="lucide:book-open" class="text-[#2027ed]" width="14"></iconify-icon>
+                        <span class="text-sm text-gray-400 group-hover:text-white">
+                          brahma.fi/docs
+                        </span>
+                      </div>
+                      <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" width="12"></iconify-icon>
+                    </a>
+                    <a href="https://x.com/BrahmaFi/status/1901683038104510855" target="_blank" class="flex items-center justify-between group p-2 border border-transparent hover:border-[#333] hover:bg-[#111] transition-all">
+                      <div class="flex items-center gap-3">
+                        <iconify-icon icon="lucide:bot" class="text-[#2027ed]" width="14"></iconify-icon>
+                        <span class="text-sm text-gray-400 group-hover:text-white">
+                          automation and defi agents
+                        </span>
+                      </div>
+                      <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" width="12"></iconify-icon>
+                    </a>
+                    <a href="https://x.com/BrahmaFi/status/1953510651235573973" target="_blank" class="flex items-center justify-between group p-2 border border-transparent hover:border-[#333] hover:bg-[#111] transition-all">
+                      <div class="flex items-center gap-3">
+                        <iconify-icon icon="lucide:credit-card" class="text-[#2027ed]" width="14"></iconify-icon>
+                        <span class="text-sm text-gray-400 group-hover:text-white">
+                          the defi-powered crypto card
+                        </span>
+                      </div>
+                      <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity" width="12"></iconify-icon>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top Signals (Embedded) -->
+
+              <!-- Role 2: OKX -->
+              <div class="ascii-box p-6 bg-[#0a0a0a]">
+                <div class="flex justify-between items-start mb-6 border-b border-dashed border-[#333] pb-4">
+                  <div class="">
+                    <div class="flex gap-3 gap-x-3 gap-y-3 items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" class="w-[58px] h-[58px]" data-icon-set="simple-icons" data-simple-icons="okx" stroke-width="2" data-icon-replaced="true" style="width: 58px; height: 58px; color: rgb(255, 255, 255);">
+                        <path fill="currentColor" d="M7.15 8.685c.03.02.05.06.05.1v6.44c0 .04-.02.08-.05.1a.17.17 0 0 1-.11.05H.16a.17.17 0 0 1-.11-.05a.14.14 0 0 1-.05-.1v-6.44c0-.04.02-.08.05-.1a.17.17 0 0 1 .11-.05h6.88c.04 0 .08.02.11.05m-2.35 2.35a.14.14 0 0 0-.05-.1a.16.16 0 0 0-.11-.05H2.56a.17.17 0 0 0-.11.04a.14.14 0 0 0-.05.1v1.95c0 .04.02.08.05.1c.03.04.07.05.11.05h2.08c.04 0 .08-.01.11-.04a.14.14 0 0 0 .05-.1zm16.8 0v1.94c0 .09-.07.15-.16.15h-2.08c-.09 0-.16-.06-.16-.15v-1.94c0-.08.07-.15.16-.15h2.08c.09 0 .16.06.16.15m-2.4-2.25v1.95c0 .08-.07.15-.16.15h-2.08c-.09 0-.16-.07-.16-.15v-1.95c0-.08.07-.15.16-.15h2.08c.09 0 .16.07.16.15m4.8 0v1.95c0 .08-.07.15-.16.15h-2.08c-.09 0-.16-.07-.16-.15v-1.95c0-.08.07-.15.16-.15h2.08c.09 0 .16.07.16.15m-4.8 4.5v1.94c0 .08-.07.15-.16.15h-2.08c-.09 0-.16-.07-.16-.15v-1.95c0-.08.07-.15.16-.15h2.08c.09 0 .16.07.16.15zm4.8 0v1.94c0 .08-.07.15-.16.15h-2.08c-.09 0-.16-.07-.16-.15v-1.95c0-.08.07-.15.16-.15h2.08c.09 0 .16.07.16.15zm-8.4-4.5v1.95c0 .08-.07.15-.16.15h-2.08c-.09 0-.16-.07-.16-.15v-1.95c0-.08.07-.15.16-.15h2.08c.09 0 .16.07.16.15m0 4.5v1.94c0 .08-.07.15-.16.15h-2.08c-.09 0-.16-.07-.16-.15v-1.95c0-.08.07-.15.16-.15h2.08c.09 0 .16.07.16.15zm-2.4-.3a.16.16 0 0 1-.16.15H10.8v2.08c0 .04-.02.08-.05.11a.17.17 0 0 1-.11.04H8.56a.17.17 0 0 1-.12-.04a.14.14 0 0 1-.04-.1v-6.45c0-.04.01-.08.04-.1a.17.17 0 0 1 .12-.05h2.08c.04 0 .08.02.11.05c.03.02.05.06.05.1v2.1h2.24c.04 0 .08.01.11.04s.05.07.05.1z" class=""></path>
+                      </svg>
+                    </div>
+                    <p class="text-sm text-[#2027ed] mt-2">
+                      marketing associate
+                    </p>
+                  </div>
+                  <span class="text-sm text-gray-600 font-medium">
+                    apr 21 - dec 21
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+                  <div class="bg-[#111] p-4 border border-[#222]">
+                    <p class="text-xs text-gray-500 mb-1.5 uppercase tracking-wide">
+                      social growth
+                    </p>
+                    <p class="text-xl text-white font-bold">10,000%+</p>
+                  </div>
+                  <div class="bg-[#111] p-4 border border-[#222]">
+                    <p class="uppercase text-xs text-gray-500 tracking-wide mb-1.5" style="">
+                      readership via bLOGS
+                    </p>
+                    <p class="text-xl text-white font-bold">100%+</p>
+                  </div>
+                </div>
+
+                <ul class="text-sm text-gray-400 space-y-3 list-none mb-6 border-b border-[#222] pb-6 leading-relaxed">
+                  <li class="flex gap-3">
+                    <span class="text-[#2027ed] font-bold">-</span>
+                    managed social strategy &amp; content calendar for india
+                    region
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="text-[#2027ed] font-bold">-</span>
+                    scaled communities across twitter &amp; telegram
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="text-[#2027ed] font-bold">-</span>
+                    facilitated influencer partnerships and campaigns
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="text-[#2027ed] font-bold">-</span>
+                    optimized user acquisition funnels via localized content
+                  </li>
+                </ul>
+
+                <!-- Clients Logos -->
+                <div class="mb-6">
+                  <p class="text-xs text-gray-500 mb-3 font-semibold">
+                    clients / partners:
+                  </p>
+                  <div class="flex flex-wrap gap-3">
+                    <div class="bg-[#111] border border-[#222] p-2 px-4 flex items-center gap-2.5 text-xs text-gray-300">
+                      <iconify-icon icon="simple-icons:chiliz" class="text-[#2027ed]"></iconify-icon>
+                      chiliz
+                    </div>
+                    <div class="bg-[#111] border border-[#222] p-2 px-4 flex items-center gap-2.5 text-xs text-gray-300">
+                      <iconify-icon icon="simple-icons:thesandbox" class="text-[#2027ed]"></iconify-icon>
+                      sandbox
+                    </div>
+                    <div class="bg-[#111] border border-[#222] p-2 px-4 flex items-center gap-2.5 text-xs text-gray-300">
+                      <span class="">mudrex</span>
+                    </div>
+                    <div class="bg-[#111] border border-[#222] p-2 px-4 flex items-center gap-2.5 text-xs text-gray-500">
+                      <span class="" style="">+ more</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PR Links -->
+                <div class="border-t border-[#333] pt-4">
+                  <p class="text-xs text-gray-500 mb-3 font-semibold">
+                    coverage:
+                  </p>
+                  <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+                    <a href="https://economictimes.indiatimes.com/markets/cryptocurrency/okex-integrates-fiat-gateway-bitbns-for-india-based-traders/articleshow/86639454.cms" target="_blank" class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 hover:border-[#2027ed] transition-colors flex items-center gap-2.5">
+                      <iconify-icon icon="lucide:newspaper" class="text-[#2027ed]" width="14" stroke-width="1.5"></iconify-icon>
+                      <span class="text-xs text-white font-medium">
+                        Economic Times
+                      </span>
+                    </a>
+                    <a href="https://www.livemint.com/technology/tech-news/okex-allocates-100-million-for-blockchain-development-in-asia-11635749727380.html" target="_blank" class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 hover:border-[#2027ed] transition-colors flex items-center gap-2.5">
+                      <iconify-icon icon="lucide:newspaper" class="text-[#2027ed]" width="14" stroke-width="1.5"></iconify-icon>
+                      <span class="text-xs text-white font-medium">
+                        LiveMint
+                      </span>
+                    </a>
+                    <a href="https://ibsintelligence.com/ibsi-news/okex-and-utorg-to-elevate-fiat-currency-based-crypto-buying-in-india/" target="_blank" class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 hover:border-[#2027ed] transition-colors flex items-center gap-2.5">
+                      <iconify-icon icon="lucide:newspaper" class="text-[#2027ed]" width="14" stroke-width="1.5"></iconify-icon>
+                      <span class="text-xs text-white font-medium">
+                        IBS Intelligence
+                      </span>
+                    </a>
+                    <span class="shrink-0 border border-[#333] bg-[#111] px-4 py-2.5 text-xs text-gray-500 flex items-center font-medium">
+                      + more
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pre-Web3 -->
+              <div class="ascii-box border-l-[#333] hover:border-l-[#2027ed] bg-[#0a0a0a] border-l-4 pt-6 pr-6 pb-6 pl-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h3 class="text-lg text-white font-semibold">pre-web3.exe</h3>
+                  <a href="https://www.linkedin.com/in/aarushi-arun-788808180/" target="_blank" class="hover:underline text-sm font-medium text-[#2027ed]">
+                    [ receipts on linkedin ]
+                  </a>
+                </div>
+                <p class="leading-relaxed text-sm text-gray-400" style="">
+                  former business grad. led marketing teams at sea neobanks,
+                  ghostwrote for founders, dabbled at tedx india, and lived in
+                  technical seo rabbit holes. shipped covid-era mystery boxes
+                  for a coupon extension and wrote copy for hot wheels, baskin
+                  robbins and more!
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Hackathons -->
+          <section class="">
+            <div class="flex items-center gap-3 mb-6">
+              <iconify-icon icon="lucide:trophy" class="text-[#2027ed]" width="20" stroke-width="1.5"></iconify-icon>
+              <h2 class="text-base text-white tracking-tight font-semibold">
+                hackathon wins
+              </h2>
+            </div>
+            <div class="space-y-4">
+              <a href="https://pitch.com/v/hyperbridge-web3-marketing-hackathon-buenos-aires-2025-by-aarushiftw-m2jibq" target="_blank" class="block group">
+                <div class="flex items-center justify-between border-b border-[#222] py-4 group-hover:pl-3 transition-all">
+                  <div class="">
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm font-semibold text-white">
+                        devconnect argentina 2025
+                      </span>
+                      <span class="bg-[#2027ed] text-black text-[10px] px-1.5 py-0.5 font-bold uppercase">
+                        1ST PODIUM
+                      </span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1.5" style="">
+                      hyperbridge growth campaign
+                    </p>
+                  </div>
+                  <iconify-icon icon="lucide:arrow-up-right" class="text-[#333] group-hover:text-[#2027ed] stroke-width-1.5" width="20"></iconify-icon>
+                </div>
+              </a>
+              <a href="https://pitch.com/v/xportal-x-berachain-aarushi-a-ooo-hackathon-eth-denver-7t74b6" target="_blank" class="block group">
+                <div class="flex items-center justify-between border-b border-[#222] py-4 group-hover:pl-3 transition-all">
+                  <div class="">
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm font-semibold text-white">
+                        eth denver 2025
+                      </span>
+                      <span class="bg-[#2027ed] text-black text-[10px] px-1.5 py-0.5 font-bold uppercase">
+                        1ST PODIUM
+                      </span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1.5">
+                      xportal x berachain
+                    </p>
+                  </div>
+                  <iconify-icon icon="lucide:arrow-up-right" class="text-[#333] group-hover:text-[#2027ed] stroke-width-1.5" width="20"></iconify-icon>
+                </div>
+              </a>
+              <a href="https://pitch.com/v/giga-deck-aarushi-arun-5iedxg/9126937e-e81f-498e-b18b-90f61949ee93" target="_blank" class="block group">
+                <div class="flex items-center justify-between border-b border-[#222] py-4 group-hover:pl-3 transition-all">
+                  <div class="">
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm font-semibold text-white">
+                        eth bangkok 2024
+                      </span>
+                      <span class="border border-[#333] text-gray-400 text-[10px] px-1.5 py-0.5 uppercase">
+                        3RD PODIUM
+                      </span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1.5" style="">
+                      rebranding web3 with giga
+                    </p>
+                  </div>
+                  <iconify-icon icon="lucide:arrow-up-right" class="text-[#333] group-hover:text-[#2027ed] stroke-width-1.5" width="20"></iconify-icon>
+                </div>
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="lg:col-span-4 flex flex-col gap-x-12 gap-8">
+          <!-- Substack -->
+          <div class="border border-[#2027ed] p-6 relative overflow-hidden group">
+            <div class="absolute top-4 right-4 w-12 h-12 border border-[#2027ed]/30 overflow-hidden bg-black flex items-center justify-center">
+              <pre class="text-[6px] leading-[6px] text-[#2027ed] font-mono whitespace-pre" id="noise-ascii">     |
+  \  |  /
+   \ | /
+---- + ----
+   / | \
+  /  |  \
+     |
+</pre>
+            </div>
+
+            <p class="text-xs text-[#2027ed] uppercase tracking-wider mb-3 font-bold">
+              writing
+            </p>
+            <h3 class="text-xl text-white mb-3 font-semibold">
+              aarushiftw.substack
+            </h3>
+            <p class="text-sm text-gray-400 mb-5 leading-relaxed">
+              i write about the internet, marketing, money, and why none of this
+              is accidental.
+            </p>
+
+            <div class="flex flex-col gap-3 mb-5">
+              <a href="https://aarushiftw.substack.com/p/why-do-drug-dealers-still-live-with" target="_blank" class="bg-[#111] border border-[#222] p-3 hover:border-[#2027ed] transition-colors group/link z-20 relative">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-gray-300 group-hover/link:text-white font-semibold">
+                    incentives
+                  </span>
+                  <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 group-hover/link:text-[#2027ed] stroke-width-1.5" width="16"></iconify-icon>
+                </div>
+              </a>
+              <a href="https://aarushiftw.substack.com/p/youre-free-to-choose-almost" target="_blank" class="bg-[#111] border border-[#222] p-3 hover:border-[#2027ed] transition-colors group/link z-20 relative">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-gray-300 font-bold group-hover/link:text-white">
+                    habit loops
+                  </span>
+                  <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 group-hover/link:text-[#2027ed] stroke-width-1.5" width="16"></iconify-icon>
+                </div>
+              </a>
+              <a href="https://aarushiftw.substack.com/p/info-is-the-currency-of-the-internet" target="_blank" class="bg-[#111] border border-[#222] p-3 hover:border-[#2027ed] transition-colors group/link z-20 relative">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-gray-300 font-bold group-hover/link:text-white">
+                    info wagering
+                  </span>
+                  <iconify-icon icon="lucide:arrow-up-right" class="text-gray-600 group-hover/link:text-[#2027ed] stroke-width-1.5" width="16"></iconify-icon>
+                </div>
+              </a>
+            </div>
+
+            <a href="https://aarushiftw.substack.com/" target="_blank" class="inline-block bg-[#2027ed] text-black text-xs px-5 py-2.5 hover:bg-white transition-colors w-full text-center uppercase tracking-wide relative z-50 font-semibold cursor-pointer pointer-events-auto">
+              read latest -&gt;
+            </a>
+          </div>
+
+          <!-- Vibe Coded Projects -->
+          <section class="relative z-40">
+            <div class="flex items-center gap-3 mb-5">
+              <iconify-icon icon="lucide:code-2" class="text-[#2027ed]" width="20" stroke-width="1.5"></iconify-icon>
+              <h2 class="text-base text-white tracking-tight font-semibold">
+                vibe coded
+              </h2>
+            </div>
+            <div class="space-y-4">
+              <a href="https://polkadot-manifesto.vercel.app/" target="_blank" class="block bg-[#111] p-4 border-l-2 border-[#333] hover:border-[#2027ed] hover:bg-[#161616] transition-all group relative z-50">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-sm text-white font-semibold">
+                    polkadot creative strategy
+                  </h4>
+                  <iconify-icon icon="lucide:external-link" class="text-gray-600 group-hover:text-[#2027ed] text-xs stroke-width-1.5"></iconify-icon>
+                </div>
+                <div class="text-xs text-gray-500 space-y-1.5 font-medium">
+                  <p>
+                    <span class="text-[#2027ed]">prob:</span>
+                    make parachains feel intuitive
+                  </p>
+                  <p class="">
+                    <span class="text-gray-400">sol:</span>
+                    manifesto-style social campaign
+                  </p>
+                </div>
+              </a>
+              <a href="https://crypto-roast-generator.vercel.app/" target="_blank" class="block bg-[#111] p-4 border-l-2 border-[#333] hover:border-[#2027ed] hover:bg-[#161616] transition-all group relative z-50">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-sm font-bold text-white">
+                    a crypto roast bot
+                  </h4>
+                  <iconify-icon icon="lucide:external-link" class="text-gray-600 group-hover:text-[#2027ed] text-xs stroke-width-1.5"></iconify-icon>
+                </div>
+                <div class="text-xs text-gray-500 space-y-1.5 font-medium">
+                  <p class="">
+                    <span class="text-[#2027ed]">prob:</span>
+                    spark curiosity pre-NFT launch
+                  </p>
+                  <p class="">
+                    <span class="text-gray-400">sol:</span>
+                    roast-bot for onchain scores
+                  </p>
+                </div>
+              </a>
+              <a href="https://www.createanything.com/dev-server-waiting-room?projectGroupId=6ed86f3d-1aa5-4485-821b-fff9183de87e&amp;pathname=/&amp;server=web" target="_blank" class="block bg-[#111] p-4 border-l-2 border-[#333] hover:border-[#2027ed] hover:bg-[#161616] transition-all group relative z-50">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="text-sm font-bold text-white">
+                    AI GENERATED card skins
+                  </h4>
+                  <iconify-icon icon="lucide:external-link" class="text-gray-600 group-hover:text-[#2027ed] text-xs stroke-width-1.5"></iconify-icon>
+                </div>
+                <div class="text-xs text-gray-500 space-y-1.5 font-medium">
+                  <p class="" style="">
+                    <span class="text-[#2027ed]">prob:</span>
+                    social loops for the swype card
+                  </p>
+                  <p class="">
+                    <span class="text-gray-400">sol:</span>
+                    UNIQUE ai-generated card skins
+                  </p>
+                </div>
+              </a>
+            </div>
+          </section>
+
+          <!-- Top Signals Section -->
+          <section class="relative z-30 mt-4">
+            <div class="flex items-center gap-3 mb-3">
+              <iconify-icon icon="lucide:activity" class="text-[#2027ed]" width="20" stroke-width="1.5"></iconify-icon>
+              <h2 class="text-base font-semibold text-white tracking-tight" style="">
+                designed / delivered
+              </h2>
+            </div>
+            <div class="relative group/slider slideshow-container border border-[#333] bg-[#0a0a0a] p-0.5">
+              <div id="tweet-slideshow" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth items-start">
+                <!-- Tweet 1 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-0&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1956671285334851614&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 311px; height: 549px; display: block; flex-grow: 1;" data-tweet-id="1956671285334851614"></iframe>
+                  </div>
+                </div>
+
+                <!-- Tweet 2 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-1" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-1&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1952777622871495119&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 311px; height: 1113px; display: block; flex-grow: 1;" data-tweet-id="1952777622871495119"></iframe>
+                  </div>
+                </div>
+
+                <!-- Tweet 3 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-2" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-2&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1914720382512144506&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 311px; height: 663px; display: block; flex-grow: 1;" data-tweet-id="1914720382512144506"></iframe>
+                  </div>
+                </div>
+
+                <!-- Tweet 4 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-3" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-3&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1892961691874497011&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 250px; height: 553px; display: block; flex-grow: 1;" data-tweet-id="1892961691874497011"></iframe>
+                  </div>
+                </div>
+
+                <!-- Tweet 5 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-4" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-4&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1797667146685989247&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 250px; height: 495px; display: block; flex-grow: 1;" data-tweet-id="1797667146685989247"></iframe>
+                  </div>
+                </div>
+
+                <!-- Tweet 6 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-5" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-5&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1851286892912034123&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 250px; height: 590px; display: block; flex-grow: 1;" data-tweet-id="1851286892912034123"></iframe>
+                  </div>
+                </div>
+
+                <!-- Tweet 7 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-6" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-6&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1681328496742744065&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 250px; height: 535px; display: block; flex-grow: 1;" data-tweet-id="1681328496742744065"></iframe>
+                  </div>
+                </div>
+
+                <!-- Tweet 8 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-0&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=170017904611239159&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 311px; height: 549px; display: block; flex-grow: 1;" data-tweet-id="170017904611239159"></iframe>
+                  </div>
+                </div>
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-8" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-8&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1950973571129549135&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 250px; height: 572px; display: block; flex-grow: 1;" data-tweet-id="1950973571129549135"></iframe>
+                  </div>
+                </div>
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-9" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-9&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1946194458992902218&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 250px; height: 610px; display: block; flex-grow: 1;" data-tweet-id="1946194458992902218"></iframe>
+                  </div>
+                </div>
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe id="twitter-widget-10" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" class="" title="X Post" src="https://platform.twitter.com/embed/Tweet.html?dnt=false&amp;embedId=twitter-widget-10&amp;features=e30%3D&amp;frame=false&amp;hideCard=false&amp;hideThread=false&amp;id=1887762395948622221&amp;lang=en&amp;origin=about%3Asrcdoc&amp;theme=dark&amp;widgetsVersion=2615f7e52b7e0%3A1702314776716&amp;width=550px" style="position: static; visibility: visible; width: 250px; height: 591px; display: block; flex-grow: 1;" data-tweet-id="1887762395948622221"></iframe>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="flex justify-between items-center px-4 py-3 border-t border-[#222] bg-[#0c0c0c]">
+                <button onclick="document.getElementById('tweet-slideshow').scrollBy({left: -this.parentElement.parentElement.offsetWidth, behavior: 'smooth'})" class="text-gray-500 hover:text-[#2027ed] transition-colors">
+                  <iconify-icon icon="lucide:arrow-left" width="16"></iconify-icon>
+                </button>
+                <span class="text-[10px] text-[#2027ed] font-mono tracking-widest uppercase animate-pulse">
+                  [ live_feed ]
+                </span>
+                <button onclick="document.getElementById('tweet-slideshow').scrollBy({left: this.parentElement.parentElement.offsetWidth, behavior: 'smooth'})" class="text-gray-500 hover:text-[#2027ed] transition-colors">
+                  <iconify-icon icon="lucide:arrow-right" width="16"></iconify-icon>
+                </button>
+              </div>
+
+              <script>
+                (function() {
+                  const slider = document.getElementById('tweet-slideshow');
+                  let interval;
+
+                  function startSlide() {
+                    interval = setInterval(() => {
+                       if(slider.matches(':hover')) return;
+                       const maxScroll = slider.scrollWidth - slider.clientWidth;
+                       if(slider.scrollLeft >= maxScroll - 5) {
+                         slider.scrollTo({left: 0, behavior: 'smooth'});
+                       } else {
+                         slider.scrollBy({left: slider.clientWidth, behavior: 'smooth'});
+                       }
+                    }, 6000);
+                  }
+
+                  // Reload widgets to ensure proper rendering in flex container
+                  if (window.twttr) {
+                    window.twttr.widgets.load();
+                  }
+
+                  startSlide();
+                })();
+              </script>
+            </div>
+          </section>
+
+          <!-- Technical / Content -->
+
+          <!-- In the Spotlight (Mentions) -->
+          <section class="relative z-30 mt-6">
+            <div class="flex items-center gap-3 mb-3">
+              <iconify-icon icon="lucide:star" class="text-[#2027ed]" width="20" stroke-width="1.5"></iconify-icon>
+              <h2 class="text-base text-white tracking-tight font-semibold">
+                in the spotlight
+              </h2>
+            </div>
+            <div class="relative group/slider slideshow-container border border-[#333] bg-[#0a0a0a] p-0.5">
+              <div id="spotlight-slideshow" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth items-start">
+                <!-- Spotlight Tweet 1 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+                      title="X Post"
+                      src="https://platform.twitter.com/embed/Tweet.html?id=1958107281717105013&theme=dark"
+                      style="position: static; visibility: visible; width: 100%; max-width: 550px; display: block; flex-grow: 1;"></iframe>
+                  </div>
+                </div>
+                <!-- Spotlight Tweet 2 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+                      title="X Post"
+                      src="https://platform.twitter.com/embed/Tweet.html?id=1942869359384203751&theme=dark"
+                      style="position: static; visibility: visible; width: 100%; max-width: 550px; display: block; flex-grow: 1;"></iframe>
+                  </div>
+                </div>
+                <!-- Spotlight Tweet 3 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+                      title="X Post"
+                      src="https://platform.twitter.com/embed/Tweet.html?id=1823594896869220820&theme=dark"
+                      style="position: static; visibility: visible; width: 100%; max-width: 550px; display: block; flex-grow: 1;"></iframe>
+                  </div>
+                </div>
+                <!-- Spotlight Tweet 4 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+                      title="X Post"
+                      src="https://platform.twitter.com/embed/Tweet.html?id=1825532031654039870&theme=dark"
+                      style="position: static; visibility: visible; width: 100%; max-width: 550px; display: block; flex-grow: 1;"></iframe>
+                  </div>
+                </div>
+                <!-- Spotlight Tweet 5 -->
+                <div class="min-w-full shrink-0 snap-center flex justify-center items-start tweet-container p-1">
+                  <div style="display: flex; max-width: 550px; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                    <iframe scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true"
+                      title="X Post"
+                      src="https://platform.twitter.com/embed/Tweet.html?id=1949857999117566042&theme=dark"
+                      style="position: static; visibility: visible; width: 100%; max-width: 550px; display: block; flex-grow: 1;"></iframe>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="flex justify-between items-center px-4 py-3 border-t border-[#222] bg-[#0c0c0c]">
+                <button onclick="document.getElementById('spotlight-slideshow').scrollBy({left: -this.parentElement.parentElement.offsetWidth, behavior: 'smooth'})" class="text-gray-500 hover:text-[#2027ed] transition-colors">
+                  <iconify-icon icon="lucide:arrow-left" width="16"></iconify-icon>
+                </button>
+                <span class="text-[10px] text-[#2027ed] font-mono tracking-widest uppercase">
+                  [ mentions ]
+                </span>
+                <button onclick="document.getElementById('spotlight-slideshow').scrollBy({left: this.parentElement.parentElement.offsetWidth, behavior: 'smooth'})" class="text-gray-500 hover:text-[#2027ed] transition-colors">
+                  <iconify-icon icon="lucide:arrow-right" width="16"></iconify-icon>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Side Quests -->
+          <section class="relative z-30 mt-6">
+            <div class="flex items-center gap-3 mb-4">
+              <iconify-icon icon="lucide:map" class="text-[#2027ed]" width="20" stroke-width="1.5"></iconify-icon>
+              <h2 class="text-base text-white tracking-tight font-semibold">
+                side quests
+              </h2>
+            </div>
+            <ul class="space-y-4 text-xs sm:text-sm text-gray-500 font-mono">
+              <li class="flex gap-3 items-start relative z-20">
+                <span class="text-[#2027ed]">01.</span>
+                <a href="https://usefulfictions.substack.com/p/how-to-be-more-agentic" target="_blank" class="hover:text-white underline decoration-dotted transition-colors z-20 relative" style="">
+                  currently studying: how to be more agentic
+                </a>
+              </li>
+              <li class="flex gap-3 items-start relative z-20">
+                <span class="text-[#2027ed]">02.</span>
+                <a href="https://www.youtube.com/watch?v=chS8tyMQ7B8&amp;t=811s" target="_blank" class="hover:text-white underline decoration-dotted transition-colors relative z-50 cursor-pointer pointer-events-auto">
+                  panel: improving ux in crypto
+                </a>
+              </li>
+              <li class="flex gap-3 items-start relative z-20">
+                <span class="text-[#2027ed]">03.</span>
+                <a href="https://pudding.cool/2023/09/invisible-epidemic/" target="_blank" class="hover:text-white underline decoration-dotted transition-colors z-20 relative">
+                  reverse engineering this (cool storytelling tactic with data)
+                </a>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <div class="mt-20 border-t border-[#222] pt-8">
+        <div class="border border-[#333] bg-[#0c0c0c] p-4 flex flex-col sm:flex-row gap-4 sm:items-center relative overflow-hidden group">
+          <div class="absolute top-0 left-0 w-[3px] h-full bg-white"></div>
+          <div class="flex-1 flex gap-4 items-start">
+            <iconify-icon icon="lucide:triangle-alert" class="text-white mt-0.5 shrink-0" width="16"></iconify-icon>
+            <div class="">
+              <h4 class="text-[10px] text-white uppercase tracking-widest mb-1 font-semibold">
+                caution // npc_downtime.log
+              </h4>
+              <p class="leading-relaxed text-xs text-gray-400 font-mono" style="">
+                aspiring polymath, sticker hoarder, lego architect, hans zimmer
+                enjoyoor.
+              </p>
+            </div>
+          </div>
+          <button onclick="window.toggleGame()" class="shrink-0 border border-dashed border-[#333] hover:border-white hover:text-white text-gray-500 px-3 py-2 text-[10px] uppercase tracking-widest transition-colors flex items-center gap-2 font-semibold">
+            [ pump_play ]
+            <iconify-icon icon="lucide:play" width="10"></iconify-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer & Easter Egg Trigger -->
+      <footer class="sm:text-left flex flex-col sm:flex-row z-50 text-center mt-6 pt-4 pb-10 relative gap-x-4 gap-y-4 items-center justify-between">
+        <div class="text-xs text-gray-600" style="">
+          <span class="text-[#2027ed]">aarushi_proofofwork.v0.exe</span>
+        </div>
+        <div class="flex gap-4 text-xs text-gray-500 items-center">
+          <span>© 2025</span>
+          <span class="animate-pulse text-[#2027ed]">[ system_online ]</span>
+        </div>
+      </footer>
+
+      <!-- Hidden Game Container -->
+      <div id="game-wrapper" class="w-full h-0 overflow-hidden opacity-0 border-t border-[#2027ed] bg-[#050505] mb-12 relative flex flex-col items-center justify-center">
+        <div class="absolute top-2 right-2 text-[10px] text-gray-500 font-mono z-10">
+          [ space / tap to flap ]
+        </div>
+        <div class="absolute top-2 left-2 text-[10px] text-[#2027ed] font-mono z-10" id="game-status"></div>
+
+        <!-- Game Canvas: Overflow-x-auto to prevent wrapping on mobile -->
+        <div class="w-full overflow-x-auto flex justify-center no-scrollbar">
+          <pre id="game-canvas" class="text-white whitespace-pre font-bold text-xs leading-none"></pre>
+        </div>
+      </div>
+
+      <script>
+        // Digital Fluid ASCII Header
+        (function() {
+          const canvas = document.getElementById('fluid-header');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          let width, height;
+          let cols, rows;
+          const cellSize = 14;
+          const chars = "XY0101<>?:=.-*#%@";
+          let offset = 0;
+          let mouse = { x: -1000, y: -1000 };
+
+          function resize() {
+            width = canvas.width = canvas.parentElement.offsetWidth;
+            height = canvas.height = canvas.parentElement.offsetHeight;
+            cols = Math.ceil(width / cellSize);
+            rows = Math.ceil(height / cellSize);
+            ctx.font = "12px 'JetBrains Mono'";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+          }
+
+          function draw() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = "#2027ed";
+            offset += 0.02;
+
+            for (let y = 0; y < rows; y++) {
+              for (let x = 0; x < cols; x++) {
+                let px = x * cellSize + cellSize/2;
+                let py = y * cellSize + cellSize/2;
+
+                // Base flow noise
+                const angle = (Math.cos(x * 0.08 + offset) + Math.sin(y * 0.08 + offset * 0.5)) * Math.PI;
+
+                // Mouse interaction (Magnetic field)
+                const dx = mouse.x - px;
+                const dy = mouse.y - py;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxDist = 250;
+
+                let xOff = 0;
+                let yOff = 0;
+                let alpha = 0.1; // Base faint visibility
+
+                if (dist < maxDist) {
+                   const force = Math.pow((1 - dist / maxDist), 2);
+                   // Magnetic push/pull
+                   const magnetStrength = 25 * force;
+                   xOff = (dx / dist) * magnetStrength * -1; // Repel
+                   yOff = (dy / dist) * magnetStrength * -1;
+
+                   alpha = 0.1 + force * 0.9; // Brighten near mouse
+
+                   // Digital Noise / Glitch
+                   if (Math.random() < 0.02 * force) {
+                      ctx.fillStyle = "#ffffff"; // White flash
+                   } else {
+                      ctx.fillStyle = "#2027ed";
+                   }
+                } else {
+                   ctx.fillStyle = "#2027ed";
+                   // Faint background waves
+                   alpha = Math.max(0, Math.sin(x * 0.1 + offset) * Math.cos(y * 0.1 + offset) * 0.15);
+                }
+
+                if (alpha > 0.01) {
+                  ctx.globalAlpha = alpha;
+                  // Select char based on angle + distortion
+                  const charIndex = Math.floor(Math.abs(angle + (dist < maxDist ? dist/50 : 0)) * chars.length) % chars.length;
+                  ctx.fillText(chars[charIndex], px + xOff, py + yOff);
+                }
+              }
+            }
+            requestAnimationFrame(draw);
+          }
+
+          window.addEventListener('resize', resize);
+          window.addEventListener('mousemove', e => {
+             const rect = canvas.getBoundingClientRect();
+             mouse.x = e.clientX - rect.left;
+             mouse.y = e.clientY - rect.top;
+          });
+          window.addEventListener('mouseleave', () => { mouse.x = -1000; mouse.y = -1000; });
+
+          resize();
+          draw();
+        })();
+
+        // Game Logic
+        (function() {
+                  const wrapper = document.getElementById('game-wrapper');
+                  const canvas = document.getElementById('game-canvas');
+                  const statusEl = document.getElementById('game-status');
+
+                  let isGameActive = false;
+                  let reqId;
+
+                  const width = 45;
+                  const height = 18;
+                  const FPS = 15;
+                  const interval = 1000 / FPS;
+
+                  let now, then, delta;
+                  let birdY = 10, birdVel = 0, pipes = [], score = 0, highScore = 0;
+                  let gameOver = false, gameStarted = false, frameCount = 0;
+
+                  const BIRD_CHAR = '>';
+                  const PIPE_CHAR = '█';
+                  const EMPTY_CHAR = ' ';
+                  const SYMBOLS = ['₿', 'Ξ', '◎'];
+
+                  function resetGame() {
+                    birdY = Math.floor(height / 2);
+                    birdVel = 0;
+                    pipes = [];
+                    score = 0;
+                    gameOver = false;
+                    gameStarted = false;
+                    frameCount = 0;
+                    if(statusEl) {
+                        statusEl.textContent = 'awaiting signature...';
+                        statusEl.style.color = '#2027ed';
+                    }
+                    if(canvas) canvas.innerHTML = renderFrame();
+                  }
+
+                  function spawnPipe() {
+                    const gapSize = 5;
+                    const gapY = Math.floor(Math.random() * (height - gapSize - 2)) + 1;
+                    pipes.push({
+                      x: width - 1,
+                      gapTop: gapY,
+                      gapBottom: gapY + gapSize,
+                      symbol: SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
+                      passed: false
+                    });
+                  }
+
+                  function update() {
+                    if (!gameStarted || gameOver) return;
+                    frameCount++;
+                    birdVel += 0.4;
+                    birdY += birdVel;
+                    if (birdY < 0) { birdY = 0; birdVel = 0; }
+                    if (birdY >= height) { endGame('rect'); return; }
+                    if (frameCount % 18 === 0) spawnPipe();
+                    for (let i = pipes.length - 1; i >= 0; i--) {
+                      let p = pipes[i];
+                      p.x -= 1;
+                      if (p.x === 5) {
+                        const birdRow = Math.round(birdY);
+                        if (birdRow < p.gapTop || birdRow >= p.gapBottom) { endGame('collision'); return; }
+                      }
+                      if (p.x === 4 && !p.passed) {
+                        p.passed = true;
+                        score++;
+                        if (statusEl) {
+                            statusEl.textContent = score % 5 === 0 && score > 0 ? `gas: ${score} [MEV DETECTED]` : `gas: ${score}`;
+                            statusEl.style.color = score % 5 === 0 && score > 0 ? '#f59e0b' : '#2027ed';
+                        }
+                      }
+                      if (p.x < 0) pipes.splice(i, 1);
+                    }
+                  }
+
+                  function renderFrame() {
+                    let grid = Array(height).fill().map(() => Array(width).fill(EMPTY_CHAR));
+                    pipes.forEach(p => {
+                      if (p.x >= 0 && p.x < width) {
+                        for (let y = 0; y < height; y++) {
+                          if (y < p.gapTop || y >= p.gapBottom) {
+                            grid[y][p.x] = PIPE_CHAR;
+                            if(p.x + 1 < width) grid[y][p.x + 1] = PIPE_CHAR;
+                          }
+                          else if (y === p.gapTop) { grid[y][p.x] = p.symbol; }
+                        }
+                      }
+                    });
+                    const birdRow = Math.min(Math.max(Math.round(birdY), 0), height - 1);
+                    grid[birdRow][5] = BIRD_CHAR;
+                    if (!gameStarted && !gameOver) writeCenter(grid, "[ SPACE TO MINT ]", Math.floor(height/2));
+                    else if (gameOver) {
+                      writeCenter(grid, "TX FAILED", Math.floor(height/2) - 1);
+                      writeCenter(grid, `GAS: ${score}`, Math.floor(height/2) + 1);
+                      writeCenter(grid, "[ SPACE TO RETRY ]", Math.floor(height/2) + 3);
+                    }
+                    else {
+                       const scoreStr = `${score}`;
+                       for(let i=0; i<scoreStr.length; i++) if (width - 2 + i < width) grid[0][width - 4 + i] = scoreStr[i];
+                    }
+                    return grid.map(row => row.join('')).join('\n');
+                  }
+
+                  function writeCenter(grid, text, row) {
+                     if (row < 0 || row >= height) return;
+                     const startCol = Math.floor((width - text.length) / 2);
+                     for (let i = 0; i < text.length; i++) {
+                       if (startCol + i >= 0 && startCol + i < width) grid[row][startCol + i] = text[i];
+                     }
+                  }
+
+                  function endGame(reason) {
+                    gameOver = true;
+                    if (score > highScore) highScore = score;
+                    if(statusEl) {
+                        statusEl.textContent = reason === 'rect' ? 'rekt (liquidated)' : 'collision (reorg)';
+                        statusEl.style.color = '#ef4444';
+                    }
+                  }
+
+                  function loop() {
+                    if (!isGameActive) return;
+                    reqId = requestAnimationFrame(loop);
+                    now = Date.now();
+                    delta = now - then;
+                    if (delta > interval) {
+                      then = now - (delta % interval);
+                      update();
+                      if(canvas) canvas.innerHTML = renderFrame();
+                    }
+                  }
+
+                  function startGameLoop() {
+                     resetGame();
+                     then = Date.now();
+                     loop();
+                  }
+
+                  function flap(e) {
+                    if (e && e.type === 'keydown' && e.code === 'Space') e.preventDefault();
+                    if (!isGameActive) return;
+                    if (gameOver) { resetGame(); return; }
+                    if (!gameStarted) { gameStarted = true; if(statusEl) statusEl.textContent = 'wagmi'; }
+                    birdVel = -1.8;
+                  }
+
+                  window.toggleGame = function() {
+                     if (document.activeElement && document.activeElement.blur) {
+                         document.activeElement.blur();
+                     }
+
+                     if (!wrapper) return;
+                     if (wrapper.style.height === '320px') {
+                       wrapper.style.height = '0';
+                       wrapper.style.opacity = '0';
+                       isGameActive = false;
+                       if(reqId) cancelAnimationFrame(reqId);
+                     }
+                     else {
+                       wrapper.style.height = '320px';
+                       wrapper.style.opacity = '1';
+                       isGameActive = true;
+                       startGameLoop();
+                       setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth'}), 300);
+                     }
+                  };
+
+                  document.addEventListener('keydown', (e) => { if (isGameActive && (e.code === 'Space' || e.key === ' ')) flap(e); });
+                  if(wrapper) {
+                      wrapper.addEventListener('touchstart', (e) => { if (isGameActive) { e.preventDefault(); flap(); } });
+                      wrapper.addEventListener('mousedown', (e) => { if (isGameActive) { e.preventDefault(); flap(); } });
+                  }
+                })()
+      </script>
+      <script>
+        (function() {
+          const canvas = document.getElementById('ascii-canvas');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          let width, height, cols, rows;
+          const fontSize = 14;
+          const chars = " .:-=+*#%@";
+          let t = 0;
+
+          function resize() {
+            const parent = canvas.parentElement;
+            if (parent) {
+              width = canvas.width = parent.offsetWidth;
+              height = canvas.height = parent.offsetHeight;
+              cols = Math.ceil(width / fontSize);
+              rows = Math.ceil(height / fontSize);
+            }
+            ctx.font = "12px 'JetBrains Mono'";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+          }
+
+          function draw() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = "#2027ed";
+            t += 0.02;
+
+            for (let y = 0; y < rows; y++) {
+              for (let x = 0; x < cols; x++) {
+                const v = Math.sin(x * 0.04 + t) + Math.sin(y * 0.04 + t * 0.5) + Math.sin((x + y) * 0.01 - t);
+                const n = (v + 3) / 6;
+                if (n > 0.35) {
+                  const charIdx = Math.floor(Math.min(n, 0.99) * chars.length);
+                  ctx.globalAlpha = Math.max(0.1, n * 0.8);
+                  ctx.fillText(chars[charIdx], x * fontSize + fontSize / 2, y * fontSize + fontSize / 2);
+                }
+              }
+            }
+            requestAnimationFrame(draw);
+          }
+
+          window.addEventListener('resize', resize);
+          resize();
+          draw();
+        })();
+      </script>
+    </main>
+
+    <script>
+      (function(){const e=document.getElementById("header-visualizer");if(!e)return;const t="  ▂▃▄▅▆▇█";let n=0;function r(){if(!e.isConnected)return;const o=Math.floor(e.parentElement.clientWidth/2.5);let c="";n+=.05;for(let a=0;a<6;a++){for(let l=0;l<o;l++){const i=Math.sin(l*.06+n)+Math.cos(l*.03-n*.5+a*.5);const s=Math.floor((i+2.5)/5*t.length);c+=t[Math.max(0,Math.min(t.length-1,s))]}c+="\n"}e.textContent=c;requestAnimationFrame(r)}r()})();
+    </script>
+
+    <iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; width: 0px; height: 0px; padding: 0px; border: none; display: none;" title="Twitter analytics iframe"></iframe>
+    <iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; width: 0px; height: 0px; padding: 0px; border: none; display: none;" title="Twitter analytics iframe"></iframe>
+    <iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; width: 0px; height: 0px; padding: 0px; border: none; display: none;" title="Twitter analytics iframe"></iframe>
+    <iframe id="rufous-sandbox" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen="true" style="position: absolute; visibility: hidden; width: 0px; height: 0px; padding: 0px; border: none; display: none;" title="Twitter analytics iframe"></iframe>
+  
+</body></html>
