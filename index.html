@@ -1357,7 +1357,7 @@
                     });
                     const birdRow = Math.min(Math.max(Math.round(birdY), 0), height - 1);
                     grid[birdRow][5] = BIRD_CHAR;
-                    if (!gameStarted && !gameOver) writeCenter(grid, "[ Start game: HIT SPACE BAR TO FLAP UP/DOWN ACROSS MARKETS ]", Math.floor(height/2));
+                    if (!gameStarted && !gameOver) writeCenter(grid, "[ TO PLAY HIT SPACE BAR TO FLAP UP/DOWN ACROSS MARKETS ]", Math.floor(height/2));
                     else if (gameOver) {
                       writeCenter(grid, "TX FAILED", Math.floor(height/2) - 1);
                       writeCenter(grid, `GAS: ${score}`, Math.floor(height/2) + 1);
